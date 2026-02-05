@@ -1,2 +1,5 @@
-# has to ignore train file for now because too big
-train.json 
+# has to ignore files for now because too big
+deepfashion/*
+imat/*
+foo.csv
+foo.xlsx
