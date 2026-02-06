@@ -4,3 +4,4 @@ imat/*
 foo.csv
 foo.xlsx
 .env
+**/.dbt/.user.yml
