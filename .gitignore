@@ -3,3 +3,4 @@ deepfashion/*
 imat/*
 foo.csv
 foo.xlsx
+.env

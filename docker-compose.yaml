@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: postgres:18.1
+    container_name: fashion_postgres
+    environment:
+      POSTGRES_DB: fashion
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d fashion"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  dbt:
+    image: ghcr.io/dbt-labs/dbt-postgres:1.9.latest
+    container_name: fashion_dbt
+    user: "${UID}:${GID}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./project:/dbt
+      - ./project/.dbt:/dbt/.dbt
+    environment:
+      DBT_PROFILES_DIR: /dbt/.dbt
+    working_dir: /dbt
+    entrypoint: ["bash", "-lc"]
+    command: ["tail -f /dev/null"]
