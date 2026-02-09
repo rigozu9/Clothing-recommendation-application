@@ -1,0 +1,1 @@
+select * from {{ source('raw', 'imat_label_map') }}
