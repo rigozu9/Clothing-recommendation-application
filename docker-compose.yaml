@@ -28,7 +28,7 @@ services:
       - ./project/.dbt:/dbt/.dbt
     environment:
       DBT_PROFILES_DIR: /dbt/.dbt
-    working_dir: /dbt
+    working_dir: /dbt/fashion
     entrypoint: ["bash", "-lc"]
     command: ["tail -f /dev/null"]
 
