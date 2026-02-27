@@ -18,8 +18,8 @@ services:
 
   dbt:
     image: ghcr.io/dbt-labs/dbt-postgres:1.9.latest
+    platform: linux/amd64
     container_name: fashion_dbt
-    user: "${UID}:${GID}"
     depends_on:
       postgres:
         condition: service_healthy
