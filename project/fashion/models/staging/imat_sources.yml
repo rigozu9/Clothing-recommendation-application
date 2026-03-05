@@ -3,4 +3,25 @@ sources:
     schema: raw
     tables:
       - name: imat_label_map
+        columns:
+          - name: label_id
+            tests:
+              - not_null
+              - unique
       - name: imat_annotations
+        columns:
+          - name: image_id
+            tests:
+              - not_null
+models:
+  - name: stg_imat_annotation_labels
+    columns:
+      - name: image_id
+        tests:
+          - not_null
+      - name: label_id
+        tests:
+          - not_null
+          - relationships:
+              to: source('raw', 'imat_label_map')
+              field: label_id
