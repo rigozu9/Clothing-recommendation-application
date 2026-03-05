@@ -13,6 +13,11 @@ sources:
           - name: image_id
             tests:
               - not_null
+          - name: split
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['train', 'validation']
 models:
   - name: stg_imat_annotation_labels
     columns:
