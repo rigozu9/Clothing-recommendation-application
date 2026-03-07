@@ -1,17 +1,19 @@
+import joblib
+from scipy import sparse
 import pandas as pd
-from sqlalchemy import create_engine
 
-engine = create_engine("postgresql+psycopg2://postgres:postgres@localhost:5434/fashion")
+vectorizer = joblib.load("tfidf_vectorizer.joblib")
+X = sparse.load_npz("item_tfidf_matrix.npz")
+index_df = pd.read_csv("item_index.csv")
 
-query = """
-select
-    split,
-    image_id,
-    tokens
-from analytics.int_imat_image_token_lists
-order by split, image_id
-"""
+vocab = vectorizer.get_feature_names_out()
 
-df = pd.read_sql(query, engine)
-print(df.head())
-print(df.shape)
+row_idx = 0
+row_dense = X[row_idx].toarray()[0]
+
+vocab = vectorizer.get_feature_names_out()
+
+print("Image ID:", index_df.iloc[row_idx]["image_id"])
+
+for token, value in zip(vocab, row_dense):
+    print(token, value)
