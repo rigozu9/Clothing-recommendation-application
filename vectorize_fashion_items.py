@@ -8,7 +8,7 @@ index_df = pd.read_csv("item_index.csv")
 
 vocab = vectorizer.get_feature_names_out()
 
-row_idx = 0
+row_idx = 247999
 row_dense = X[row_idx].toarray()[0]
 
 vocab = vectorizer.get_feature_names_out()
