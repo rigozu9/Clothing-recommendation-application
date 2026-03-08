@@ -8,12 +8,18 @@ index_df = pd.read_csv("item_index.csv")
 
 vocab = vectorizer.get_feature_names_out()
 
-row_idx = 247999
-row_dense = X[row_idx].toarray()[0]
+image_id = 22896 
+matches = index_df.index[index_df["image_id"] == image_id].tolist()
 
-vocab = vectorizer.get_feature_names_out()
+if not matches:
+    raise ValueError(f"image_id {image_id} not found in item_index.csv")
+
+row_idx = matches[0]
+row_dense = X[row_idx].toarray()[0]
 
 print("Image ID:", index_df.iloc[row_idx]["image_id"])
 
 for token, value in zip(vocab, row_dense):
+    # if value != 0:
+    #     print(token, value)
     print(token, value)
