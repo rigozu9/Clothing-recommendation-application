@@ -5,3 +5,4 @@ foo.csv
 foo.xlsx
 .env
 **/.dbt/.user.yml
+__pycache__/
