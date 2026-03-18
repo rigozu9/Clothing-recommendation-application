@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import api from "../api/api";
+import { ping } from "../api/ping";
 
 const Home = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [pong, setPong] = useState("");
 
   const handleCreateUser = async (e) => {
     e.preventDefault();
@@ -22,6 +24,19 @@ const Home = () => {
       setMessage(err.response?.data?.detail || "Something went wrong");
     }
   };
+
+  useEffect(() => {
+    const fetchPing = async () => {
+      try {
+        const data = await ping();
+        setPong(data.message);
+      } catch (error) {
+        setPong("Virhe yhteydessä backendiin");
+      }
+    };
+
+    fetchPing();
+  }, []);
 
   return (
     <div style={{ padding: "2rem" }}>
@@ -48,8 +63,8 @@ const Home = () => {
 
         <button type="submit">Create user</button>
       </form>
-
       <p>{message}</p>
+      <p>{pong}</p>
     </div>
   );
 };

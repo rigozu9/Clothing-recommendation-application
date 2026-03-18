@@ -20,3 +20,7 @@ app.include_router(style_vectors.router, prefix="/style-vectors", tags=["style-v
 @app.get("/")
 def root():
     return {"message": "API is running"}
+
+@app.get("/pong")
+def pong():
+    return {"message": "Ping pongiong!"}
