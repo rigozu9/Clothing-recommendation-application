@@ -2,6 +2,15 @@ sources:
   - name: raw
     schema: raw
     tables:
+      - name: imat_images
+        columns:
+          - name: image_id
+            tests:
+              - not_null
+              - unique
+          - name: url
+            tests:
+              - not_null
       - name: imat_label_map
         columns:
           - name: label_id

@@ -4,8 +4,8 @@ from app.db import Base
 
 
 class Image(Base):
-    __tablename__ = "imat_images"
-    __table_args__ = {"schema": "raw"}
+    __tablename__ = "stg_imat_images"
+    __table_args__ = {"schema": "analytics_stg"}
 
     image_id = Column(Integer, primary_key=True, index=True)
     split = Column(String)

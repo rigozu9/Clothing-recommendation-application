@@ -7,5 +7,5 @@ router = APIRouter()
 
 @router.get("/")
 def get_images(db: Session = Depends(get_db)):
-    images = db.query(Image).limit(100).all()
+    images = db.query(Image).limit(1000).all()
     return images
