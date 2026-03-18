@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.db import get_db
-from app.models import UserStyleVector
+from app.models.user_style_vector import UserStyleVector
 from app.schemas import UserStyleVectorCreate, UserStyleVectorOut
 
 router = APIRouter()

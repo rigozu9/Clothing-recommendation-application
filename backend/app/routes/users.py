@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 import bcrypt
 
 from app.db import get_db
-from app.models import AppUser
+from app.models.app_user import AppUser
 from app.schemas import UserCreate, UserOut
 
 router = APIRouter()

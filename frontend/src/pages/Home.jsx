@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import api from "../api/api";
 import { ping } from "../api/ping";
+import { getImages } from "../api/image";
 
 const Home = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [images, setImages] = useState([]);
   const [pong, setPong] = useState("");
 
   const handleCreateUser = async (e) => {
@@ -38,6 +40,11 @@ const Home = () => {
     fetchPing();
   }, []);
 
+  useEffect(() => {
+    getImages().then(setImages);
+  }, []);
+
+
   return (
     <div style={{ padding: "2rem" }}>
       <h1>Clothing Recommender</h1>
@@ -65,6 +72,19 @@ const Home = () => {
       </form>
       <p>{message}</p>
       <p>{pong}</p>
+      <div>
+        {images.map((img) => (
+          <img
+            key={img.image_id}
+            src={img.url}
+            alt="clothing"
+            width="200"
+            onError={(e) => {
+              e.target.style.display = "none";
+            }}
+          />
+        ))}
+      </div>
     </div>
   );
 };
