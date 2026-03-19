@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routes import users, style_vectors, images
+from app.routes import users, style_vectors, images, plotdata
 
 app = FastAPI(title="Clothing Recommender API")
 
@@ -16,6 +16,7 @@ app.add_middleware(
 app.include_router(users.router, prefix="/users", tags=["users"])
 app.include_router(style_vectors.router, prefix="/style-vectors", tags=["style-vectors"])
 app.include_router(images.router, prefix="/images", tags=["images"])
+app.include_router(plotdata.router, prefix="/plotdata", tags=["plotdata"])
 
 
 @app.get("/")

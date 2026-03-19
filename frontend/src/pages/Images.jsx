@@ -14,6 +14,7 @@ const Images = () => {
       <h1>Images</h1>
       <p>
         <Link to="/">Back to home</Link>
+        <Link to="/plot">View Plot</Link>
       </p>
       <div>
         {images.map((img) => (
