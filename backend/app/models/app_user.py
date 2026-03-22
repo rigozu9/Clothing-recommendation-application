@@ -13,4 +13,15 @@ class AppUser(Base):
     password_hash = Column(Text, nullable=False)
     created_at = Column(TIMESTAMP, server_default=func.now())
 
-    style_vectors = relationship("UserStyleVector", back_populates="user", cascade="all, delete")
+    style_vector = relationship(
+        "UserStyleVector",
+        back_populates="user",
+        uselist=False,
+        cascade="all, delete",
+    )
+
+    liked_items = relationship(
+        "UserLikedItem",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )

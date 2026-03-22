@@ -10,8 +10,14 @@ class UserStyleVector(Base):
     __table_args__ = {"schema": "analytics"}
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("analytics.app_user.id", ondelete="CASCADE"), nullable=False)
+    user_id = Column(
+        Integer,
+        ForeignKey("analytics.app_user.id", ondelete="CASCADE"),
+        nullable=False,
+        unique=True,
+    )
     style_vector = Column(ARRAY(DOUBLE_PRECISION), nullable=False)
+    source_item_count = Column(Integer, nullable=False, default=0)
     created_at = Column(TIMESTAMP, server_default=func.now())
 
-    user = relationship("AppUser", back_populates="style_vectors")
+    user = relationship("AppUser", back_populates="style_vector")
