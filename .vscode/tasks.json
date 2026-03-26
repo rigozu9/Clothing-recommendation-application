@@ -21,6 +21,19 @@
       "problemMatcher": [],
       "isBackground": true
     },
+
+    {
+      "label": "Postgres psql",
+      "type": "shell",
+      "command": "docker exec -it fashion_postgres psql -U postgres -d fashion",
+      "problemMatcher": []
+    },
+    {
+      "label": "DBT bash",
+      "type": "shell",
+      "command": "docker exec -it fashion_dbt bash",
+      "problemMatcher": []
+    },
     {
       "label": "Start All",
       "dependsOn": ["Docker", "Backend", "Frontend"]
