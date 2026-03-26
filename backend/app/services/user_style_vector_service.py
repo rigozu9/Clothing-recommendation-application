@@ -64,3 +64,19 @@ def add_like_and_update_user_vector(db: Session, user_id: int, image_id: int):
         "source_item_count": user_style_row.source_item_count,
         "style_vector": user_style_row.style_vector,
     }
+
+def get_user_style_vector(db: Session, user_id: int):
+    user_style_row = (
+        db.query(UserStyleVector)
+        .filter(UserStyleVector.user_id == user_id)
+        .first()
+    )
+
+    if not user_style_row:
+        raise ValueError(f"user_style_vector not found for user_id {user_id}")
+
+    return {
+        "user_id": user_style_row.user_id,
+        "source_item_count": user_style_row.source_item_count,
+        "style_vector": user_style_row.style_vector,
+    }

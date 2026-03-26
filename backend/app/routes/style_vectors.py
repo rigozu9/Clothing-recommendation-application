@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.db import get_db
 from app.models.user_style_vector import UserStyleVector
+from app.services.user_style_vector_service import get_user_style_vector
 from app.schemas import UserStyleVectorCreate, UserStyleVectorOut
 
 router = APIRouter()
@@ -20,12 +21,9 @@ def create_user_style_vector(payload: UserStyleVectorCreate, db: Session = Depen
     return row
 
 
-@router.get("/latest/{user_id}", response_model=UserStyleVectorOut)
-def get_latest_user_style_vector(user_id: int, db: Session = Depends(get_db)):
-    row = (
-        db.query(UserStyleVector)
-        .filter(UserStyleVector.user_id == user_id)
-        .order_by(UserStyleVector.created_at.desc(), UserStyleVector.id.desc())
-        .first()
-    )
-    return row
+@router.get("/{user_id}")
+def read_user_style_vector(user_id: int, db: Session = Depends(get_db)):
+    try:
+        return get_user_style_vector(db=db, user_id=user_id)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
