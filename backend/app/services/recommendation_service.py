@@ -1,10 +1,9 @@
 import numpy as np
 from sqlalchemy.orm import Session
-from sklearn.neighbors import NearestNeighbors
 
 from app.models.user_style_vector import UserStyleVector
 from app.models.user_liked_item import UserLikedItem
-from app.ml.artifacts import index_df, X
+from app.ml.artifacts import index_df, X, nn_model
 
 
 def get_recommendations_for_user(db: Session, user_id: int, top_k: int = 10):
@@ -30,9 +29,6 @@ def get_recommendations_for_user(db: Session, user_id: int, top_k: int = 10):
         row.image_id
         for row in db.query(UserLikedItem).filter(UserLikedItem.user_id == user_id).all()
     }
-
-    nn_model = NearestNeighbors(metric="cosine", algorithm="brute")
-    nn_model.fit(X)
 
     distances, indices = nn_model.kneighbors(user_vector_2d, n_neighbors=top_k + len(liked_image_ids))
 
