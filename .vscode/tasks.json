@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Docker",
+      "type": "shell",
+      "command": "docker compose up -d",
+      "problemMatcher": []
+    },
+    {
+      "label": "Backend",
+      "type": "shell",
+      "command": "cd backend && source venv/bin/activate && uvicorn app.main:app --reload",
+      "problemMatcher": [],
+      "isBackground": true
+    },
+    {
+      "label": "Frontend",
+      "type": "shell",
+      "command": "cd frontend && npm run dev",
+      "problemMatcher": [],
+      "isBackground": true
+    },
+    {
+      "label": "Start All",
+      "dependsOn": ["Docker", "Backend", "Frontend"]
+    }
+  ]
+}
