@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+import app.models
 from app.routes import users, style_vectors, images, plotdata
 
 app = FastAPI(title="Clothing Recommender API")
