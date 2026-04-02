@@ -9,8 +9,16 @@ const RecommendationsPage = () => {
 
   useEffect(() => {
     const fetchRecommendations = async () => {
+      const userId = localStorage.getItem("user_id");
+
+      if (!userId) {
+        setError("You must be logged in to see recommendations");
+        setLoading(false);
+        return;
+      }
+
       try {
-        const res = await getRecommendations(2);
+        const res = await getRecommendations(userId);
         setData(res);
       } catch (err) {
         console.error(err);
