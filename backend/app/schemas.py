@@ -17,6 +17,8 @@ class UserOut(BaseModel):
     class Config:
         from_attributes = True
 
+class LikeItemRequest(BaseModel):
+    image_id: int
 
 class UserStyleVectorCreate(BaseModel):
     user_id: int
