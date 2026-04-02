@@ -1,4 +1,5 @@
 import numpy as np
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.models.user_style_vector import UserStyleVector
@@ -6,7 +7,7 @@ from app.models.user_liked_item import UserLikedItem
 from app.ml.artifacts import index_df, X, nn_model
 
 
-def get_recommendations_for_user(db: Session, user_id: int, top_k: int = 10):
+def get_recommendations_for_user(db: Session, user_id: int, top_k: int = 30):
     user_style_row = (
         db.query(UserStyleVector)
         .filter(UserStyleVector.user_id == user_id)
@@ -39,6 +40,9 @@ def get_recommendations_for_user(db: Session, user_id: int, top_k: int = 10):
     result["distance"] = neighbor_distances
     result["similarity"] = 1 - result["distance"]
 
+    # keep only train items
+    result = result[result["split"] == "train"]
+
     if liked_image_ids:
         # Remove items the user has already liked:
         # - result["image_id"].isin(liked_image_ids) → True for liked items
@@ -48,6 +52,20 @@ def get_recommendations_for_user(db: Session, user_id: int, top_k: int = 10):
 
     result = result.head(top_k)
 
+    recommended_image_ids = [int(row.image_id) for row in result.itertuples(index=False)]
+
+    image_url_map = {}
+
+    if recommended_image_ids:
+        sql = text("""
+            SELECT image_id, url
+            FROM analytics_stg.stg_imat_images
+            WHERE image_id = ANY(:image_ids) and split = 'train'
+        """)
+
+        rows = db.execute(sql, {"image_ids": recommended_image_ids}).fetchall()
+        image_url_map = {row.image_id: row.url for row in rows}
+
     return {
         "user_id": user_id,
         "source_item_count": user_style_row.source_item_count,
@@ -55,6 +73,7 @@ def get_recommendations_for_user(db: Session, user_id: int, top_k: int = 10):
             {
                 "image_id": int(row.image_id),
                 "similarity": float(row.similarity),
+                "url": image_url_map.get(int(row.image_id)),
             }
             for row in result.itertuples(index=False)
         ],
