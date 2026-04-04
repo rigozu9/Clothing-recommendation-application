@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { getImages } from "../api/image";
 import { likeItem } from "../api/user_like";
 import Navbar from "../components/Navbar";
@@ -8,11 +9,19 @@ const Images = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const genderMode = searchParams.get("gender_mode") || "all";
+  const limit = Number(searchParams.get("limit")) || 20;
 
   useEffect(() => {
     const fetchImages = async () => {
+      setLoading(true);
+      setError("");
+      setCurrentIndex(0);
+
       try {
-        const data = await getImages();
+        const data = await getImages(genderMode, limit);
         setImages(data);
       } catch (err) {
         console.error(err);
@@ -23,7 +32,14 @@ const Images = () => {
     };
 
     fetchImages();
-  }, []);
+  }, [genderMode, limit]);
+
+  const handleGenderChange = (mode) => {
+    setSearchParams({
+      gender_mode: mode,
+      limit: String(limit),
+    });
+  };
 
   const handleNext = () => {
     setCurrentIndex((prev) => prev + 1);
@@ -63,6 +79,41 @@ const Images = () => {
       <div className="max-w-7xl mx-auto px-6 py-6">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold">Browse Images</h1>
+        </div>
+
+        <div className="flex justify-center gap-3 mb-6">
+          <button
+            onClick={() => handleGenderChange("all")}
+            className={`px-4 py-2 rounded-xl border transition ${
+              genderMode === "all"
+                ? "bg-white text-black border-white"
+                : "border-white text-white hover:bg-white hover:text-black"
+            }`}
+          >
+            All
+          </button>
+
+          <button
+            onClick={() => handleGenderChange("male")}
+            className={`px-4 py-2 rounded-xl border transition ${
+              genderMode === "male"
+                ? "bg-white text-black border-white"
+                : "border-white text-white hover:bg-white hover:text-black"
+            }`}
+          >
+            Men
+          </button>
+
+          <button
+            onClick={() => handleGenderChange("female")}
+            className={`px-4 py-2 rounded-xl border transition ${
+              genderMode === "female"
+                ? "bg-white text-black border-white"
+                : "border-white text-white hover:bg-white hover:text-black"
+            }`}
+          >
+            Women
+          </button>
         </div>
 
         {loading && <p className="text-gray-300">Loading images...</p>}
