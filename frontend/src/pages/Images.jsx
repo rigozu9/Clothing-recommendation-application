@@ -12,7 +12,7 @@ const Images = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const genderMode = searchParams.get("gender_mode") || "all";
-  const limit = Number(searchParams.get("limit")) || 20;
+  const limit = Number(searchParams.get("limit")) || 1000;
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -66,7 +66,13 @@ const Images = () => {
       handleNext();
     } catch (err) {
       console.error(err);
-      setError("Failed to like item");
+      const detail = err.response?.data?.detail || "Failed to like item";
+      setError(detail);
+      setTimeout(() => {
+        setError("");
+      }, 5000);
+
+      handleNext();
     }
   };
 
