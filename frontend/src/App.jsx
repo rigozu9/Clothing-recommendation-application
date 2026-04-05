@@ -5,6 +5,7 @@ import PlotComponent from "./pages/Plot";
 import RecommendationsPage from "./pages/RecommendationsPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
+import StyleProfilePage from "./pages/StyleProfilePage";
 
 const App = () => {
   return (
@@ -12,7 +13,6 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/images" element={<Images />} />
-        <Route path="/plot" element={<PlotComponent />} />
         <Route path="/recommendations" element={<RecommendationsPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
