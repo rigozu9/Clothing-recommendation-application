@@ -23,6 +23,9 @@ const Navbar = () => {
           <Link to="/recommendations" className="text-gray-300 hover:text-white transition">
             Recommendations
           </Link>
+          <Link to="/style-profile" className="text-gray-300 hover:text-white transition">
+            My Style
+          </Link>
         </div>
 
         {/* Right */}
