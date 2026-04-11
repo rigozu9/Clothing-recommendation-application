@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-  ResponsiveContainer,
-} from "recharts";
+import { useSearchParams } from "react-router-dom";
+
 import Navbar from "../components/Navbar";
+import ColorsChart from "../components/ColorsChart";
+import MaterialsChart from "../components/MaterialsChart";
+import StylesChart from "../components/StylesChart";
+
 import { getUserStylePlot } from "../api/styleProfile";
 
 const StyleProfilePage = () => {
@@ -17,6 +14,9 @@ const StyleProfilePage = () => {
   const [styleData, setStyleData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const viewMode = searchParams.get("view") || "color";
 
   const transformChartData = (res) => {
     return res.labels.map((label, i) => ({
@@ -56,27 +56,9 @@ const StyleProfilePage = () => {
     fetchStyleData();
   }, []);
 
-  const ChartCard = ({ title, data }) => (
-    <div className="bg-gray-800 rounded-xl shadow border border-gray-700 p-4">
-      <h2 className="text-xl font-semibold mb-4">{title}</h2>
-
-      {data.length === 0 ? (
-        <p className="text-gray-400">No data available</p>
-      ) : (
-        <div className="w-full h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="value" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      )}
-    </div>
-  );
+  const handleViewChange = (view) => {
+    setSearchParams({ view });
+  };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -85,14 +67,51 @@ const StyleProfilePage = () => {
       <div className="max-w-7xl mx-auto px-6 py-6">
         <h1 className="text-3xl font-bold mb-6">My Style Profile</h1>
 
+        <div className="flex justify-center gap-3 mb-6">
+          <button
+            onClick={() => handleViewChange("color")}
+            className={`px-4 py-2 rounded-xl border transition ${
+              viewMode === "color"
+                ? "bg-white text-black border-white"
+                : "border-white text-white hover:bg-white hover:text-black"
+            }`}
+          >
+            Colors
+          </button>
+
+          <button
+            onClick={() => handleViewChange("material")}
+            className={`px-4 py-2 rounded-xl border transition ${
+              viewMode === "material"
+                ? "bg-white text-black border-white"
+                : "border-white text-white hover:bg-white hover:text-black"
+            }`}
+          >
+            Materials
+          </button>
+
+          <button
+            onClick={() => handleViewChange("style")}
+            className={`px-4 py-2 rounded-xl border transition ${
+              viewMode === "style"
+                ? "bg-white text-black border-white"
+                : "border-white text-white hover:bg-white hover:text-black"
+            }`}
+          >
+            Styles
+          </button>
+        </div>
+
         {loading && <p className="text-gray-300">Loading style profile...</p>}
         {error && <p className="text-red-400">{error}</p>}
 
         {!loading && !error && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <ChartCard title="Favorite Colors" data={colorData} />
-            <ChartCard title="Favorite Materials" data={materialData} />
-            <ChartCard title="Favorite Styles" data={styleData} />
+          <div className="flex justify-center items-center">
+            {viewMode === "color" && <ColorsChart data={colorData} />}
+
+            {viewMode === "material" && <MaterialsChart data={materialData} />}
+
+            {viewMode === "style" && <StylesChart data={styleData} />}
           </div>
         )}
       </div>
