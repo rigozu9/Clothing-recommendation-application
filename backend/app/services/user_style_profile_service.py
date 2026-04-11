@@ -11,7 +11,6 @@ def get_user_style_plot_data(db: Session, user_id: int, token_type: str = "color
         WHERE user_id = :user_id
           AND token_type = :token_type
         ORDER BY token_rank
-        LIMIT 5
     """)
 
     result = db.execute(query, {
