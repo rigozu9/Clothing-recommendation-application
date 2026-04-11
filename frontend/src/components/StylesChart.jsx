@@ -1,30 +1,82 @@
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  Radar,
   ResponsiveContainer,
+  Tooltip,
 } from "recharts";
 
+const formatStyleName = (name) => {
+  return name
+    .replace(/_/g, " ")
+    .toLowerCase()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+};
+
 const StylesChart = ({ data }) => {
+  const totalValue = data.reduce((sum, item) => sum + item.value, 0);
+
+  const topStyles = data.slice(0, 5);
+
+  const radarData = topStyles.map((item) => ({
+    subject: formatStyleName(item.name),
+    value: totalValue > 0 ? (item.value / totalValue) * 100 : 0,
+    rawValue: item.value,
+  }));
+
+  const summaryText = radarData
+    .slice(0, 3)
+    .map((item) => item.subject)
+    .join(", ");
+
   return (
     <div className="bg-gray-800 rounded-xl shadow border border-gray-700 p-6 w-full max-w-5xl">
-      <h2 className="text-2xl font-semibold mb-6">Favorite Styles</h2>
+      <h2 className="text-2xl font-semibold mb-2">Your Style Direction</h2>
 
-      {data.length === 0 ? (
-        <p className="text-gray-400">No data available</p>
+      <p className="text-gray-400 mb-6">
+        {radarData.length > 0
+          ? `Your style leans toward: ${summaryText}`
+          : "No style data available yet."}
+      </p>
+
+      {radarData.length === 0 ? (
+        <p className="text-gray-400">No style data available</p>
       ) : (
-        <div className="w-full h-[500px]">
+        <div className="w-full h-[650px]">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="value" />
-            </BarChart>
+            <RadarChart data={radarData}>
+              <PolarGrid stroke="#4B5563" />
+              <PolarAngleAxis
+                dataKey="subject"
+                tick={{ fill: "#D1D5DB", fontSize: 14 }}
+              />
+              <PolarRadiusAxis
+                tick={{ fill: "#9CA3AF", fontSize: 12 }}
+                axisLine={false}
+              />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#111827",
+                  border: "1px solid #374151",
+                  borderRadius: "12px",
+                  color: "#FFFFFF",
+                }}
+                labelStyle={{ color: "#FFFFFF" }}
+                formatter={(value, name, props) => [
+                  `${Math.round(value)}%`,
+                  props.payload.subject,
+                ]}
+              />
+              <Radar
+                name="Style"
+                dataKey="value"
+                stroke="#FFFFFF"
+                fill="#FFFFFF"
+                fillOpacity={0.25}
+              />
+            </RadarChart>
           </ResponsiveContainer>
         </div>
       )}
