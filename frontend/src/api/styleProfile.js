@@ -1,8 +1,6 @@
 import api from "./api";
 
-export const getUserStylePlot = async (userId, tokenType = "color") => {
-  const res = await api.get(`/users/${userId}/style-plot`, {
-    params: { token_type: tokenType },
-  });
+export const getUserStyleProfile = async (userId) => {
+  const res = await api.get(`/users/${userId}/style-profile`);
   return res.data;
 };

@@ -5,7 +5,7 @@ import bcrypt
 from app.db import get_db
 from app.models.app_user import AppUser
 from app.schemas import UserCreate, UserOut, UserLogin
-from app.services.user_style_profile_service import get_user_style_plot_data
+from app.services.user_style_profile_service import get_user_style_profile_data
 
 router = APIRouter()
 
@@ -42,6 +42,6 @@ def login(payload: UserLogin, db: Session = Depends(get_db)):
         "username": user.username,
     }
 
-@router.get("/{user_id}/style-plot")
-def get_user_style_plot(user_id: int, token_type: str = "color", db: Session = Depends(get_db)):
-    return get_user_style_plot_data(db, user_id, token_type)
+@router.get("/{user_id}/style-profile")
+def get_user_style_profile(user_id: int, db: Session = Depends(get_db)):
+    return get_user_style_profile_data(db, user_id)

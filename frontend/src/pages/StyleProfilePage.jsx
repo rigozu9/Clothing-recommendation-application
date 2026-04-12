@@ -6,7 +6,7 @@ import ColorsChart from "../components/ColorsChart";
 import MaterialsChart from "../components/MaterialsChart";
 import StylesChart from "../components/StylesChart";
 
-import { getUserStylePlot } from "../api/styleProfile";
+import { getUserStyleProfile } from "../api/styleProfile";
 
 const StyleProfilePage = () => {
   const [colorData, setColorData] = useState([]);
@@ -36,15 +36,10 @@ const StyleProfilePage = () => {
       }
 
       try {
-        const [colors, materials, styles] = await Promise.all([
-          getUserStylePlot(userId, "color"),
-          getUserStylePlot(userId, "material"),
-          getUserStylePlot(userId, "style"),
-        ]);
-
-        setColorData(transformChartData(colors));
-        setMaterialData(transformChartData(materials));
-        setStyleData(transformChartData(styles));
+        const profile = await getUserStyleProfile(userId);
+        setColorData(transformChartData(profile.color));
+        setMaterialData(transformChartData(profile.material));
+        setStyleData(transformChartData(profile.style));
       } catch (err) {
         console.error("Error fetching style profile:", err);
         setError("Failed to load style profile");
@@ -108,9 +103,7 @@ const StyleProfilePage = () => {
         {!loading && !error && (
           <div className="flex justify-center items-center">
             {viewMode === "color" && <ColorsChart data={colorData} />}
-
             {viewMode === "material" && <MaterialsChart data={materialData} />}
-
             {viewMode === "style" && <StylesChart data={styleData} />}
           </div>
         )}
