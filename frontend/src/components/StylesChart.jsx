@@ -36,12 +36,12 @@ const StylesChart = ({ data }) => {
       <h2 className="text-2xl font-semibold mb-2">Your Style Direction</h2>
 
       <p className="text-gray-400 mb-6">
-        {radarData.length > 0
+        {radarData.length >= 5
           ? `Your style leans toward: ${summaryText}`
           : "Your style leans toward these directions based on your liked items."}
       </p>
 
-      {radarData.length < 10 ? (
+      {radarData.length < 5 ? (
         <div className="rounded-xl border border-gray-700 bg-gray-900/60 px-4 py-3">
           <p className="text-gray-400 text-base">Like more items to get style insights</p>
         </div>
