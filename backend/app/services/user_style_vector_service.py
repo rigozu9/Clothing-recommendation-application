@@ -22,15 +22,6 @@ def update_user_vector_incrementally(old_vector, old_count, item_vector):
 
 
 def add_like_and_update_user_vector(db: Session, user_id: int, image_id: int):
-    liked_item = UserLikedItem(user_id=user_id, image_id=image_id)
-    db.add(liked_item)
-
-    try:
-        db.flush()
-    except IntegrityError:
-        db.rollback()
-        raise ValueError(f"user {user_id} already liked image {image_id}")
-
     user_style_row = (
         db.query(UserStyleVector)
         .filter(UserStyleVector.user_id == user_id)
@@ -48,6 +39,15 @@ def add_like_and_update_user_vector(db: Session, user_id: int, image_id: int):
             f"user vector has length {len(user_style_row.style_vector)}"
         )
 
+    liked_item = UserLikedItem(user_id=user_id, image_id=image_id)
+    db.add(liked_item)
+
+    try:
+        db.flush()
+    except IntegrityError:
+        db.rollback()
+        raise ValueError(f"user {user_id} already liked image {image_id}")
+
     new_vector, new_count = update_user_vector_incrementally(
         old_vector=user_style_row.style_vector,
         old_count=user_style_row.source_item_count,
@@ -56,6 +56,7 @@ def add_like_and_update_user_vector(db: Session, user_id: int, image_id: int):
 
     user_style_row.style_vector = new_vector
     user_style_row.source_item_count = new_count
+
     increment_user_style_token_profile(
         db=db,
         user_id=user_id,

@@ -9,7 +9,9 @@ with base as (
     join {{ ref('int_imat_image_gender') }} g
         on i.image_id = g.image_id
        and i.split = g.split
-
+    join {{ ref('int_imat_image_token_lists') }} t
+        on i.image_id = t.image_id
+       and i.split = t.split
 ),
 
 gender_filter as (
