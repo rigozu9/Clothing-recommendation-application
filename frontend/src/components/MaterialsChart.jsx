@@ -169,8 +169,10 @@ const MaterialsChart = ({ data }) => {
         Materials you tend to prefer most, ranked from strongest to weakest.
       </p>
 
-      {visibleMaterials.length === 0 ? (
-        <p className="text-gray-400">No material data available</p>
+      {visibleMaterials.length < 10 ? (
+        <div className="rounded-xl border border-gray-700 bg-gray-900/60 px-4 py-3">
+          <p className="text-gray-400 text-base">Like more items to get material insights</p>
+        </div>
       ) : (
         <div className="space-y-4">
           {visibleMaterials.map((item, index) => (

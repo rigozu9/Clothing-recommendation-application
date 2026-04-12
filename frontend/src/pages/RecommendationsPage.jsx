@@ -69,6 +69,33 @@ const RecommendationsPage = () => {
     );
   }
 
+  if (data.source_item_count === 0) {
+    return (
+      <div className="min-h-screen bg-gray-900 text-white">
+        <Navbar />
+
+        <div className="max-w-7xl mx-auto px-6 py-6">
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold">My Recommendations</h1>
+            <p className="text-gray-400 mt-2">
+              Like items to get recommendations.
+            </p>
+            <div className="mt-4 flex gap-6 text-sm text-gray-300">
+              <p>User ID: {data.user_id}</p>
+              <p>Liked items count: {data.source_item_count}</p>
+            </div>
+          </div>
+
+          <div className="bg-gray-800 border border-gray-700 rounded-2xl p-8 text-center">
+            <p className="text-gray-300 text-lg">
+              Like items to get recommendations.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <Navbar />
