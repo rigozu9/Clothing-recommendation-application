@@ -1,9 +1,11 @@
 import numpy as np
+from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.models.user_liked_item import UserLikedItem
 from app.models.user_style_vector import UserStyleVector
+from app.models.user_style_token_profile import UserStyleTokenProfile
 from app.ml.artifacts import index_df, X
 from app.ml.vector_utils import get_item_vector
 
@@ -54,6 +56,11 @@ def add_like_and_update_user_vector(db: Session, user_id: int, image_id: int):
 
     user_style_row.style_vector = new_vector
     user_style_row.source_item_count = new_count
+    increment_user_style_token_profile(
+        db=db,
+        user_id=user_id,
+        image_id=image_id,
+    )
 
     db.commit()
     db.refresh(user_style_row)
@@ -80,3 +87,42 @@ def get_user_style_vector(db: Session, user_id: int):
         "source_item_count": user_style_row.source_item_count,
         "style_vector": user_style_row.style_vector,
     }
+def increment_user_style_token_profile(db: Session, user_id: int, image_id: int):
+    token_query = text("""
+        SELECT token
+        FROM analytics.int_imat_image_tokens
+        WHERE image_id = :image_id
+    """)
+
+    upsert_query = text("""
+        INSERT INTO analytics.user_style_token_profile (
+            user_id,
+            token_type,
+            token_value,
+            token_count
+        )
+        VALUES (
+            :user_id,
+            :token_type,
+            :token_value,
+            1
+        )
+        ON CONFLICT (user_id, token_type, token_value)
+        DO UPDATE
+        SET token_count = analytics.user_style_token_profile.token_count + 1
+    """)
+
+    rows = db.execute(token_query, {"image_id": image_id}).fetchall()
+
+    for row in rows:
+        token = row[0]
+        token_type, token_value = token.split(":", 1)
+
+        db.execute(
+            upsert_query,
+            {
+                "user_id": user_id,
+                "token_type": token_type,
+                "token_value": token_value,
+            },
+        )
